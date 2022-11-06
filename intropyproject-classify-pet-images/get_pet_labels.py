@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/get_pet_labels.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                  
+# PROGRAMMER: Jason Blakely
+# DATE CREATED: 11/6/2022                                 
 # REVISED DATE: 
 # PURPOSE: Create the function get_pet_labels that creates the pet labels from 
 #          the image's filename. This function inputs: 
@@ -40,6 +40,37 @@ def get_pet_labels(image_dir):
       List. The list contains for following item:
          index 0 = pet image label (string)
     """
-    # Replace None with the results_dic dictionary that you created with this
-    # function
-    return None
+    # Creates empty dictionary named results_dic and lists for word parsing
+    results_dic = dict()
+    pet_labels = []
+    pet_labels_slpit = []
+
+    # Print number of items in dictionary
+    #print("\nEmpty Dictionary results_dic - n items=", len(items_in_dic))
+
+    # Retrieve the filenames from folder pet_images/
+    filename_list = listdir("pet_images/")
+
+    #split all words in each filename and save to list
+    pet_labels_slpit = [filename_list[i].lower().split("_") for i in range(len(filename_list))]
+
+    #combine and append only alphabetic words to label list
+    for words in pet_labels_slpit:
+        pet_label = ""
+        for word in words:
+            if word.isalpha():
+               pet_label += word + " "
+        pet_labels.append(pet_label.strip())
+    
+    #create dictionary keys=filenames, values=pet labels
+    for idx in range(0, len(filename_list), 1):
+        if filename_list[idx] not in results_dic:
+              results_dic[filename_list[idx]] = [pet_labels[idx]]
+        else:
+            print("** Warning: Key=", filename_list[idx], 
+               "already exists in results_dic with value =", 
+              results_dic[filename_list[idx]])
+
+    # Print number of items in dictionary
+    #print("\nPet Labels Dictionary results_dic items=", len(results_dic))
+    return results_dic
