@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/adjust_results4_isadog.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                 
+# PROGRAMMER: Jason Blakely
+# DATE CREATED: 11/9/2022                                 
 # REVISED DATE: 
 # PURPOSE: Create a function adjust_results4_isadog that adjusts the results 
 #          dictionary to indicate whether or not the pet image label is of-a-dog, 
@@ -67,4 +67,55 @@ def adjust_results4_isadog(results_dic, dogfile):
     Returns:
            None - results_dic is mutable data type so no return needed.
     """           
+    # Initialize empty dictionary
+    dognames_dict = {}
+
+    # Reads in dognames from file, 1 name per line & automatically closes file
+    with open('dognames.txt', "r") as file:
+      # Read dognames from first line in file
+      line = file.readline()
+
+      # Processes each line in file until EOF; add dognames to dognames_dict
+      while line != "":
+        # Strip newline from line
+        line = line.rstrip('\n')
+
+        # Add dogname(line) to dogsnames_dict if it doesn't already exist in dogsnames_dict
+        if line not in dognames_dict:
+            dognames_dict[line] = 1
+        else:
+            print("** Warning: Key=", dognames_dict[line], 
+               "already exists")
+
+        # Reads in next line in file to be processed with while loop
+        # if this line isn't empty (EOF)
+        line = file.readline()
+
+    # Loop through results_dic and see if pet label and classifier label are in dognames
+    # Append appropriate result based on if dog or not for pet label and classifier label
+    for key in results_dic:
+
+        # Pet Image Label IS found in dognames_dict
+        if results_dic[key][0] in dognames_dict:
+            
+            # Classifier Label found IS in dognames_dict
+            # appends (1, 1) because both labels are dogs
+            if results_dic[key][1] in dognames_dict:
+                results_dic[key].extend((1, 1))
+            
+            # Classifier Label found NOT in dognames_dict
+            else:
+                # appends (1, 0) because pet label is dog but classifier is not
+                results_dic[key].extend((1, 0))
+
+        # Pet Image Label NOT found in dognames_dict
+        else:
+            # Classifier Label found IS in dognames_dict
+            if results_dic[key][1] in dognames_dict:
+                results_dic[key].extend((0, 1))
+
+            # Classifier Label found NOT in dognames_dict
+            else:
+                results_dic[key].extend((0, 0))
+
     None
