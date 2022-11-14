@@ -49,7 +49,7 @@ def get_pet_labels(image_dir):
     #print("\nEmpty Dictionary results_dic - n items=", len(items_in_dic))
 
     # Retrieve the filenames from folder pet_images/
-    filename_list = listdir("pet_images/")
+    filename_list = listdir(image_dir)
 
     #split all words in each filename and save to list
     pet_labels_slpit = [filename_list[i].lower().split("_") for i in range(len(filename_list))]
